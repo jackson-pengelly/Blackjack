@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 public class Hand {
-    private ArrayList<Card> hand;
+    private final ArrayList<Card> hand;
 
     public Hand(ArrayList<Card> hand) {
         this.hand = new ArrayList<>(hand);
@@ -40,10 +40,6 @@ public class Hand {
 
     public void addCard(Card card) {
         hand.add(card);
-    }
-
-    public ArrayList<Card> getHand() {
-        return hand;
     }
 
     public boolean isSoft() {
