@@ -15,14 +15,14 @@ import java.util.Scanner;
 public class Blackjack {
     private int balance = 500;
 
-    private List<Card> deck;
-    private Hand playerHand;
-    private Hand computerHand;
+    private final List<Card> deck;
+    private final Hand playerHand;
+    private final Hand computerHand;
 
     public Blackjack() {
         this.deck = new ArrayList<>();
-        this.playerHand = new Hand(new ArrayList<Card>());
-        this.computerHand = new Hand(new ArrayList<Card>());
+        this.playerHand = new Hand(new ArrayList<>());
+        this.computerHand = new Hand(new ArrayList<>());
     }
 
     public void startGame() {
@@ -68,7 +68,7 @@ public class Blackjack {
             while (!roundOver) {
                 // displays decks
                 IO.println("Computer's upcard: " + computerHand.getUpcard().toString());
-                IO.println("Your hand: " + playerHand.toString());
+                IO.println("Your hand: " + playerHand);
 
                 // prompt user for hit or stand
                 IO.print("Hit or stand? ");
@@ -86,7 +86,7 @@ public class Blackjack {
             if (playerHand.getTotal() <= 21) {
                 Computer.computerChoice(this, computerHand);
             }
-            IO.println("Computer's hand: " + computerHand.toString());
+            IO.println("Computer's hand: " + computerHand);
 
             // general win checks
             if (playerHand.getTotal() > 21) {
