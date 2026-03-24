@@ -28,7 +28,6 @@ public class Blackjack {
     }
 
     public void startGame() {
-        String answer;
         Scanner scanner = new Scanner(System.in);
         Validator validator = new Validator();
 
@@ -37,6 +36,7 @@ public class Blackjack {
         if (balance <= 0) balance = 500;
 
         // do while loop based on if user wants to play again or check out
+        String answer;
         do {
             // prompt for initial bet
             IO.println("You have $" + balance + ".");
@@ -54,6 +54,7 @@ public class Blackjack {
 
             // setup game
             setupGame();
+            int turnCounter = 0;
             boolean roundOver = false;
 
             // check for black jack
@@ -86,17 +87,31 @@ public class Blackjack {
                 IO.println("Your hand: " + playerHand);
 
                 // prompt user for hit or stand
-                IO.print("Hit or stand? ");
+                if (turnCounter == 0) IO.print("Hit, double, or stand? ");
+                else  IO.print("Hit or stand? ");
                 answer = scanner.nextLine();
 
                 if (answer.equalsIgnoreCase("hit")) {
                     playerHand.addCard(dealCard());
-                    if (playerHand.getTotal() > 21) {
+                    if (checkBust(playerHand)) {
+                        IO.println("Your hand: " + playerHand);
                         roundOver = true;
                     }
+                } else if (answer.equalsIgnoreCase("double")) {
+                    if (!validator.validateDouble(bet, balance)) {
+                        IO.println("Doubling can not exceed balance. ");
+                        continue;
+                    }
+                    playerHand.addCard(dealCard());
+                    bet *= 2;
+
+                    IO.println("Your hand: " + playerHand);
+                    break;
                 } else {
+                    IO.println("Your hand: " + playerHand);
                     break;
                 }
+                turnCounter++;
             }
             if (playerHand.getTotal() <= 21) {
                 Computer.computerChoice(this, computerHand);
@@ -104,10 +119,10 @@ public class Blackjack {
             IO.println("Computer's hand: " + computerHand);
 
             // general win checks
-            if (playerHand.getTotal() > 21) {
+            if (checkBust(playerHand)) {
                 updateBalance(bet, "loss");
                 IO.println("Busted! Your total: " + playerHand.getTotal() + ". Your balance is now $" + balance + ".");
-            } else if (computerHand.getTotal() > 21) {
+            } else if (checkBust(computerHand)) {
                 updateBalance(bet, "win");
                 IO.println("The computer busted. You Win! Your balance is now $" + balance + ".");
             } else if (playerHand.getTotal() > computerHand.getTotal()) {
@@ -186,4 +201,6 @@ public class Blackjack {
                 break;
         }
     }
+
+    private boolean checkBust(Hand hand) { return hand.getTotal() > 21; }
 }

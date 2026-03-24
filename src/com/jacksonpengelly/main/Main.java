@@ -11,7 +11,7 @@ public class Main {
         String answer;
         do {
             game.startGame();
-            IO.println("Would you like to start a new game? (y/n) ");
+            IO.print("Would you like to start a new game? (y/n) ");
             answer = scanner.nextLine();
         } while (answer.equalsIgnoreCase("y") || answer.equalsIgnoreCase("yes"));
     }
