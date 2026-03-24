@@ -1,7 +1,7 @@
 package com.jacksonpengelly.main;
 
 public class Main {
-    public static void main(String[] args) {
+    void main() {
         Blackjack game = new Blackjack();
 
         // start game

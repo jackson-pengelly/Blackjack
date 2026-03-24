@@ -7,10 +7,10 @@ public class Hand {
     private ArrayList<Card> hand;
 
     public Hand(ArrayList<Card> hand) {
-        this.hand = hand;
+        this.hand = new ArrayList<>(hand);
     }
 
-    public int totalHand() {
+    public int getTotal() {
         int total = 0;
         int aceCounter = 0;
 
@@ -44,5 +44,21 @@ public class Hand {
 
     public ArrayList<Card> getHand() {
         return hand;
+    }
+
+    public boolean isSoft() {
+        int total = 0;
+        int aceCounter = 0;
+
+        for (Card card : hand) {
+            total += card.getValue();
+            if (card.getValue() == 11) aceCounter++;
+
+            while (total > 21 && aceCounter > 0) {
+                total -= 10;
+                aceCounter--;
+            }
+        }
+        return aceCounter > 0;
     }
 }

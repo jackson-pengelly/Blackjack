@@ -4,6 +4,7 @@ import com.jacksonpengelly.models.Card;
 import com.jacksonpengelly.models.Hand;
 import com.jacksonpengelly.models.Rank;
 import com.jacksonpengelly.models.Suit;
+import com.jacksonpengelly.util.Computer;
 import com.jacksonpengelly.util.Validator;
 
 import java.util.ArrayList;
@@ -50,17 +51,17 @@ public class Blackjack {
             boolean roundOver = false;
 
             // check for black jack
-            if (playerHand.totalHand() == 21 && computerHand.totalHand() != 21) {
+            if (playerHand.getTotal() == 21 && computerHand.getTotal() != 21) {
                 updateBalance(bet, "blackjack");
                 System.out.println("You got blackjack. You win! Your balance is now $" + balance + ".");
-                roundOver = true;
-            } else if (computerHand.totalHand() == 21 && playerHand.totalHand() != 21) {
+                continue;
+            } else if (computerHand.getTotal() == 21 && playerHand.getTotal() != 21) {
                 updateBalance(bet, "loss");
                 System.out.println("Computer got blackjack. You lose. Your balance is now $" + balance + ".");
-                roundOver = true;
-            } else if (computerHand.totalHand() == 21 && playerHand.totalHand() == 21) {
+                continue;
+            } else if (computerHand.getTotal() == 21 && playerHand.getTotal() == 21) {
                 System.out.println("You both got blackjack. You tied. Your balance is now $" + balance + ".");
-                roundOver = true;
+                continue;
             }
 
             // game loop
@@ -75,25 +76,33 @@ public class Blackjack {
 
                 if (answer.equalsIgnoreCase("hit")) {
                     playerHand.addCard(dealCard());
-                    if (playerHand.totalHand() > 21) {
+                    if (playerHand.getTotal() > 21) {
                         roundOver = true;
                     }
                 } else {
                     break;
                 }
             }
+            if (playerHand.getTotal() <= 21) {
+                Computer.computerChoice(this, computerHand);
+            }
+            IO.println("Computer's hand: " + computerHand.toString());
 
-            if (playerHand.totalHand() > 21) {
+            // general win checks
+            if (playerHand.getTotal() > 21) {
                 updateBalance(bet, "loss");
-                IO.println("Busted! Your total: " + playerHand.totalHand() + ". Your balance is now $" + balance + ".");
-            } else if (playerHand.totalHand() > computerHand.totalHand() || computerHand.totalHand() > 21) {
+                IO.println("Busted! Your total: " + playerHand.getTotal() + ". Your balance is now $" + balance + ".");
+            } else if (computerHand.getTotal() > 21) {
+                updateBalance(bet, "win");
+                IO.println("The computer busted. You Win! Your balance is now $" + balance + ".");
+            } else if (playerHand.getTotal() > computerHand.getTotal()) {
                 updateBalance(bet, "win");
                 IO.println("You win! Your balance is now $" + balance + ".");
-            } else if (playerHand.totalHand() < computerHand.totalHand()) {
+            } else if (playerHand.getTotal() < computerHand.getTotal()) {
                 updateBalance(bet, "loss");
-                IO.println("You lose. Your balance is now $" + balance + ".");
+                IO.println("You lose. Your balance is $" + balance + ".");
             } else {
-                IO.println("It's a tie.");
+                IO.println("It's a tie. Your balance is $" + balance + ".");
             }
 
             // check if balance is less than 0 to end game
@@ -138,7 +147,8 @@ public class Blackjack {
         computerHand.addCard(deck.removeFirst());
     }
 
-    private Card dealCard() {
+    public Card dealCard() {
+        if (deck.isEmpty()) shuffleDeck();
         return deck.removeFirst();
     }
 
