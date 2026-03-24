@@ -1,7 +1,6 @@
 package com.jacksonpengelly.models;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.stream.Collectors;
 
 public class Hand {
@@ -11,7 +10,7 @@ public class Hand {
         this.hand = hand;
     }
 
-    public int totalHand(Card[] hand) {
+    public int totalHand() {
         int total = 0;
         int aceCounter = 0;
 
@@ -31,7 +30,7 @@ public class Hand {
         return hand.stream().map(Card::toString).collect(Collectors.joining(", "));
     }
 
-    public Card getFirstCard() {
+    public Card getUpcard() {
         return hand.getFirst();
     }
 
