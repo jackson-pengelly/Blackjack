@@ -5,8 +5,10 @@ import com.jacksonpengelly.models.Hand;
 import com.jacksonpengelly.models.Rank;
 import com.jacksonpengelly.models.Suit;
 import com.jacksonpengelly.util.Computer;
+import com.jacksonpengelly.util.Util;
 import com.jacksonpengelly.util.Validator;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -26,9 +28,13 @@ public class Blackjack {
     }
 
     public void startGame() {
-        String answer = "";
+        String answer;
         Scanner scanner = new Scanner(System.in);
         Validator validator = new Validator();
+
+        // load balance
+        balance = Util.loadBalance();
+        if (balance <= 0) balance = 500;
 
         // do while loop based on if user wants to play again or check out
         do {
@@ -53,14 +59,23 @@ public class Blackjack {
             // check for black jack
             if (playerHand.getTotal() == 21 && computerHand.getTotal() != 21) {
                 updateBalance(bet, "blackjack");
-                System.out.println("You got blackjack. You win! Your balance is now $" + balance + ".");
+                IO.println("You got blackjack. You win! Your balance is now $" + balance + ".");
+
+                IO.print("Would you like to play again? (y/n) ");
+                answer = scanner.nextLine();
                 continue;
             } else if (computerHand.getTotal() == 21 && playerHand.getTotal() != 21) {
                 updateBalance(bet, "loss");
-                System.out.println("Computer got blackjack. You lose. Your balance is now $" + balance + ".");
+                IO.println("Computer got blackjack. You lose. Your balance is now $" + balance + ".");
+
+                IO.print("Would you like to play again? (y/n) ");
+                answer = scanner.nextLine();
                 continue;
             } else if (computerHand.getTotal() == 21 && playerHand.getTotal() == 21) {
-                System.out.println("You both got blackjack. You tied. Your balance is now $" + balance + ".");
+                IO.println("You both got blackjack. You tied. Your balance is $" + balance + ".");
+
+                IO.print("Would you like to play again? (y/n) ");
+                answer = scanner.nextLine();
                 continue;
             }
 
@@ -116,6 +131,12 @@ public class Blackjack {
             answer = scanner.nextLine();
         } while (answer.equalsIgnoreCase("y") || answer.equalsIgnoreCase("yes"));
         IO.println("Thank you for playing! Your final balance was $" + balance + ".");
+
+        try {
+            Util.saveBalance(balance);
+        } catch (IOException e) {
+            throw new RuntimeException("Error saving balance.", e);
+        }
     }
 
     private void createDeck() {
